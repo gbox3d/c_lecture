@@ -2,6 +2,8 @@
 
 #define MAX_TOKEN_SIZE 32
 
+extern Sint16 g_worldMap_Layer_1[];
+
 int doTokenize(char *szBuf, char (*szBufToken)[MAX_TOKEN_SIZE])
 {
   //change 10
@@ -50,19 +52,23 @@ void parseCmd(char *_szCmd)
 
   //   g_worldMap_Layer_1[(_y * 8) + _x] = _index;
   // }
-  // else if (strcmp(szTokens[0], "save") == 0)
-  // {
-  //   //save file.map
-  //   char *pFileName = szTokens[1];
-  //   SDL_RWops *rw = SDL_RWFromFile(pFileName, "wb");
-  //   SDL_RWwrite(rw, g_worldMap_Layer_1, sizeof(Uint16), 64);
-  //   SDL_RWclose(rw);
-  // }
-  // else if (strcmp(szTokens[0], "load") == 0)
-  // {
-  //   char *pFileName = szTokens[1];
-  //   SDL_RWops *rw = SDL_RWFromFile(pFileName, "rb");
-  //   SDL_RWread(rw, g_worldMap_Layer_1, sizeof(Uint16), 64);
-  //   SDL_RWclose(rw);
-  // }
+  else if (strcmp(szTokens[0], "save") == 0)
+  {
+    //save file.map
+    char *pFileName = szTokens[1];
+    SDL_RWops *rw = SDL_RWFromFile(pFileName, "wb");
+    SDL_RWwrite(rw, g_worldMap_Layer_1, sizeof(Uint16), 64);
+    SDL_RWclose(rw);
+  }
+  else if (strcmp(szTokens[0], "load") == 0)
+  {
+    char *pFileName = szTokens[1];
+    SDL_RWops *rw = SDL_RWFromFile(pFileName, "rb");
+    SDL_RWread(rw, g_worldMap_Layer_1, sizeof(Uint16), 64);
+    SDL_RWclose(rw);
+  }
+  else if (strcmp(szTokens[0], "new") == 0)
+  {
+    memset(g_worldMap_Layer_1,-1,128);
+  }
 }

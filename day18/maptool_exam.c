@@ -77,6 +77,16 @@ int main(int argc, char *argv[])
       {
       case SDL_MOUSEMOTION:
       {
+        if (_event.button.button == 1)
+        {
+          SDL_Point m_pt = {_event.motion.x, _event.motion.y};
+          SDL_Rect mapWindow = {
+              0, 0, 256, 256};
+          if (SDL_PointInRect(&m_pt, &mapWindow) == SDL_TRUE)
+          {
+            putMap(m_pt.x / 32, m_pt.y / 32, g_nSelectTileIndex, g_worldMap_Layer_1, 8);
+          }
+        }
         printf("%4d%4d\r", _event.motion.x, _event.motion.y);
       }
       break;
@@ -94,41 +104,25 @@ int main(int argc, char *argv[])
             {
               g_nSelectTileIndex = _y * 5 + _x;
             }
-
-            // printf("%4d%4d\r", _x, _y);
           }
           //월드멥처리
           {
             int _x = (_event.motion.x) / 32;
             int _y = (_event.motion.y) / 32;
-
-            if (_x < 8 && _y < 8)
-            {
-              int _tileIndex = _y * 8 + _x;
-              // printf("%8d \r",_tileIndex);
-              g_worldMap_Layer_1[_tileIndex] = g_nSelectTileIndex;
-              printf("%4d%4d%4d\r", _x, _y, _tileIndex);
-            }
+            putMap(_x, _y, g_nSelectTileIndex, g_worldMap_Layer_1, 8);
           }
         }
         else if (_event.button.button == 3) //마우스 우클릭
         {
-          {
-            int _x = (_event.motion.x) / 32;
-            int _y = (_event.motion.y) / 32;
-
-            if (_x < 8 && _y < 8)
-            {
-              int _tileIndex = _y * 8 + _x;
-              g_worldMap_Layer_1[_tileIndex] = -1;
-            }
-          }
+          int _x = (_event.motion.x) / 32;
+          int _y = (_event.motion.y) / 32;
+          putMap(_x, _y, -1, g_worldMap_Layer_1, 8);
         }
       }
       break;
       case SDL_KEYDOWN:
         //printf("%d \n", _event.key.keysym.scancode);
-        {          
+        {
           switch (nInputFSM)
           {
           case 0: //대기상태
@@ -142,26 +136,26 @@ int main(int argc, char *argv[])
           break;
           case 1: //입력 상태
           {
-            
-            if(_event.key.keysym.sym == SDLK_RETURN)
+
+            if (_event.key.keysym.sym == SDLK_RETURN)
             {
-              nInputFSM = 0; //대기 상태로 전이 
+              nInputFSM = 0; //대기 상태로 전이
               // printf("\n%s\n",szBuf);
               //cmd parser
               {
                 parseCmd(szBuf);
               }
 
-              szBuf[0] = 0x00;  //문자열 클리어 
-            }            
-            else if(_event.key.keysym.sym == SDLK_BACKSPACE)
+              szBuf[0] = 0x00; //문자열 클리어
+            }
+            else if (_event.key.keysym.sym == SDLK_BACKSPACE)
             {
               int _len = strlen(szBuf);
-              szBuf[_len-1] = 0x00;
-              printf("%s  \r",szBuf);
+              szBuf[_len - 1] = 0x00;
+              printf("%s  \r", szBuf);
             }
           }
-          break;          
+          break;
           default:
             break;
           }
@@ -169,10 +163,10 @@ int main(int argc, char *argv[])
         break;
       case SDL_TEXTINPUT:
       {
-        if(nInputFSM == 1)
+        if (nInputFSM == 1)
         {
-          strcat(szBuf,_event.text.text);
-          printf("%s  \r",szBuf);
+          strcat(szBuf, _event.text.text);
+          printf("%s  \r", szBuf);
         }
       }
       break;
