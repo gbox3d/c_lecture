@@ -7,6 +7,8 @@ SDL_Texture *g_pTileSet;
 Sint16 g_worldMap_Layer_1[64];
 Uint16 g_nSelectTileIndex = 0;
 
+SDL_bool g_bDrawGrid = SDL_TRUE;
+
 int main(int argc, char *argv[])
 {
   for (int i = 0; i < 64; i++)
@@ -44,10 +46,6 @@ int main(int argc, char *argv[])
     //render world map
     {
       SDL_SetRenderDrawColor(pRender, 0xff, 0xff, 0xff, 0xff);
-      // SDL_RenderDrawLine(pRender,0,0,256,0);
-      // SDL_RenderDrawLine(pRender,256,0,256,256);
-      // SDL_RenderDrawLine(pRender,256,256,0,256);
-      // SDL_RenderDrawLine(pRender,0,256,0,0);
       SDL_Rect _rtTemp;
       _rtTemp.x = 0;
       _rtTemp.y = 0;
@@ -61,6 +59,20 @@ int main(int argc, char *argv[])
         if (_index != -1)
         {
           putTile(pRender, g_pTileSet, i % 8, i / 8, _index, 16, 5, 2);
+        }
+      }
+
+      //그리드 그리기
+      if(g_bDrawGrid) {
+        for (int ix = 0; ix < 8; ix++)
+        {
+          SDL_SetRenderDrawColor(pRender, 0xff, 0xff, 0x00, 0xff);
+          SDL_RenderDrawLine(pRender, ix * 32, 0, ix * 32, 256);
+        }
+        for (int iy = 0; iy < 8; iy++)
+        {
+          SDL_SetRenderDrawColor(pRender, 0xff, 0xff, 0x00, 0xff);
+          SDL_RenderDrawLine(pRender, 0, iy*32, 256, iy*32);
         }
       }
     }
@@ -131,6 +143,10 @@ int main(int argc, char *argv[])
             {
               printf("input cmd => \n");
               nInputFSM = 1; //입력 상태로 전이
+            }
+            else if(_event.key.keysym.sym == SDLK_g)
+            {
+              g_bDrawGrid = !g_bDrawGrid;
             }
           }
           break;

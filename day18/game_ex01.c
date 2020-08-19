@@ -2,75 +2,12 @@
 #include "../engine/tile.h"
 #include "cmd_parser.h"
 
+#include "layer.h"
+
 tDE_S_Core *g_pEngineCore;
 
 Sint16 g_WorldMap[64];
-Sint16 g_WorldMap_attr_layer[64] = {
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-};
+
 
 Sint16 g_WorldMap_obj_layer[64] = {
     0,
@@ -159,9 +96,16 @@ int main(int argc, char **argv)
           g_PlayerPos.y++;          
         }
         Sint16 _attr = g_WorldMap_attr_layer[g_PlayerPos.x + (g_PlayerPos.y*8)];
-        if(_attr != 0) //갈수없는곳
+        if(_attr == 1) //갈수없는곳
         {
           g_PlayerPos = _oldPos;
+        }
+        else if(_attr == 2)
+        {
+          //다음 레벨로...
+          g_PlayerPos.x =1;
+          g_PlayerPos.y =1 ;
+          loadMap("l2.map",g_WorldMap);
         }
 
       }
