@@ -16,6 +16,21 @@ SDL_Texture *g_pTileSet2;
 SDL_Point g_PlayerPos;
 
 int g_nGameLogicFsm = 0;
+
+typedef struct __stage {
+  char *fileName;
+  SDL_Point m_respwanPos;
+  char *introMsg;
+
+} S_Stage_Info;
+
+S_Stage_Info g_stage_info[] = {
+  {"l1.map",{1,1},"here is silent room"},
+  {"l2.map",{1,2},"here is more silent room"},
+  {"end",{0,0},"u win game"}
+};
+int g_nCurrentStageNumber = 0;
+
 SDL_bool keyTable[8] = {
     SDL_FALSE,
 };
@@ -43,11 +58,12 @@ int main(int argc, char **argv)
     case 0:
       printf("start game? (press key)\n");
       g_nGameLogicFsm = 1;
+      g_nCurrentStageNumber = 0;
       break;
     case 1:
       if (keyTable[0]) //키가 눌러 졌는지 검사 ..
       {
-        printf("here is slient room ... (press key)\n");
+        printf("u enter under-ground  ... (press key)\n");
         g_nGameLogicFsm = 2;
       }
       break;
@@ -63,14 +79,17 @@ int main(int argc, char **argv)
       if (keyTable[0]) //키가 눌러 졌는지 검사 ..
       {
         keyTable[0] = SDL_FALSE;
-        printf("play game now \n");
+        
+
+        S_Stage_Info *pStgInfo = &g_stage_info[g_nCurrentStageNumber];
+        printf("%s \n",pStgInfo->introMsg);
+
         //게임시작 준비
         Sint16 *map[2] = {g_WorldMap, g_AttrLayer};
-        loadMap("l1.map", map);
+        loadMap(pStgInfo->fileName, map);
 
         //플레이어 정보 초기화
-        g_PlayerPos.x = 1;
-        g_PlayerPos.y = 1;
+        g_PlayerPos = pStgInfo->m_respwanPos;
 
         g_nGameLogicFsm = 10;
       }
@@ -106,8 +125,9 @@ int main(int argc, char **argv)
       }
       else if(_attr == 2) //비상구 
       {
-        g_PlayerPos = oldPos;
+        // g_PlayerPos = oldPos;
         //다음 스테이지로 가는 처리 
+        g_nGameLogicFsm = 11;
       }
 
       {
@@ -142,6 +162,30 @@ int main(int argc, char **argv)
         }
       }
     }
+    break;
+    case 11: //next
+    {
+      g_nCurrentStageNumber++;
+      S_Stage_Info *pInfoStg = &g_stage_info[g_nCurrentStageNumber];
+      printf("%s \n",pInfoStg->introMsg);
+
+      if(!strcmp("end",pInfoStg->fileName)) 
+      {
+        g_nGameLogicFsm = 20;
+      }
+      else {
+        g_nGameLogicFsm = 5;
+      }
+
+    }
+    break;
+    case 20:
+    {
+      printf("game over\n");
+      g_nGameLogicFsm++;
+    }
+    break;
+    case 21:
     break;
     }
     SDL_RenderPresent(g_pEngineCore->m_pRender);
