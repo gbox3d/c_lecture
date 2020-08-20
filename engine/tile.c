@@ -53,12 +53,25 @@ void drawWorld(SDL_Renderer *pRender, SDL_Texture *pTileSet, int tile_size,
   }
 }
 
-SDL_bool loadMap(const char *filename, Sint16 *map)
+SDL_bool loadMap(const char *filename, Sint16 *map[2])
 {
   SDL_RWops *rw = SDL_RWFromFile(filename, "rb");
   if (!rw)
     return SDL_FALSE;
-  SDL_RWread(rw, map, sizeof(Uint16), 64);
+  SDL_RWread(rw, map[0], sizeof(Uint16), 64);
+  SDL_RWread(rw, map[1], sizeof(Uint16), 64);
+  SDL_RWclose(rw);
+
+  return SDL_TRUE;
+}
+
+SDL_bool saveMap(const char *filename, Sint16 *map[2])
+{
+  SDL_RWops *rw = SDL_RWFromFile(filename, "wb");
+  if (!rw)
+    return SDL_FALSE;
+  SDL_RWwrite(rw, map[0], sizeof(Uint16), 64);
+  SDL_RWwrite(rw, map[1], sizeof(Uint16), 64);
   SDL_RWclose(rw);
 
   return SDL_TRUE;

@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
   memset(g_worldMap_Layer_1, -1, sizeof(Sint16) * 64);
   memset(g_attrMMap_Layer_1, 0, sizeof(Sint16) * 64);
 
-  setup_cmd_parser(g_worldMap_Layer_1);
+  // setup_cmd_parser(g_worldMap_Layer_1);
   g_pEngineCore = tDE_setup_1("maptool", 640, 480, 0);
   g_pTileSet = tDE_util_loadTexture(g_pEngineCore, "../res/dungeon.png");
 
@@ -264,13 +264,31 @@ int main(int argc, char *argv[])
         else if (strcmp(_event.user.data1, "save") == 0)
         {
           char *pFileName = ((char *)_event.user.data1 + 16);
-          
-          SDL_RWops *rw = SDL_RWFromFile(pFileName, "wb");
-          SDL_RWwrite(rw, g_worldMap_Layer_1, sizeof(Uint16), 64);
-          SDL_RWwrite(rw, g_attrMMap_Layer_1, sizeof(Uint16), 64);
-          SDL_RWclose(rw);
-          
+
+          // SDL_RWops *rw = SDL_RWFromFile(pFileName, "wb");
+          // SDL_RWwrite(rw, g_worldMap_Layer_1, sizeof(Uint16), 64);
+          // SDL_RWwrite(rw, g_attrMMap_Layer_1, sizeof(Uint16), 64);
+          // SDL_RWclose(rw);
+          Sint16 *map[2] ={ g_worldMap_Layer_1,g_attrMMap_Layer_1 };
+          saveMap(pFileName,map);
+
           printf("save file name %s \n", pFileName);
+        }
+        else if (strcmp(_event.user.data1, "load") == 0)
+        {
+          char *pFileName = ((char *)_event.user.data1 + 16);
+          Sint16 *map[2] ={ g_worldMap_Layer_1,g_attrMMap_Layer_1 };
+          loadMap(pFileName,map);
+
+          // SDL_RWops *rw = SDL_RWFromFile(pFileName, "rb");
+          // SDL_RWread(rw, g_worldMap_Layer_1, sizeof(Uint16), 64);
+          // SDL_RWread(rw, g_attrMMap_Layer_1, sizeof(Uint16), 64);
+          // SDL_RWclose(rw);
+        }
+        else if (strcmp(_event.user.data1, "new") == 0)
+        {
+          memset(g_worldMap_Layer_1,-1,128);
+          memset(g_attrMMap_Layer_1,0,128);
         }
       }
       break;

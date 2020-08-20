@@ -3,7 +3,7 @@
 
 #include "../engine/core.h"
 
-void setup_cmd_parser(Sint16 * pWordMap);
+// void setup_cmd_parser(Sint16 * pWordMap);
 void parseCmd(char *_szCmd);
 
 #endif
