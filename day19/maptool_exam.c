@@ -12,6 +12,7 @@ SDL_Rect g_rtTilePalette = {440, 0, 160, 350};
 SDL_Rect g_rtWordMap = {0, 0, 256, 256};
 
 SDL_bool g_bDrawGrid = SDL_TRUE;
+Sint16 g_nCurrentAttr = 0;
 
 int main(int argc, char *argv[])
 {
@@ -70,6 +71,26 @@ int main(int argc, char *argv[])
         }
       }
 
+      for (int i = 0; i < 64; i++)
+      {
+        SDL_SetRenderDrawBlendMode(pRender, SDL_BLENDMODE_BLEND);
+        Sint16 _index = g_attrMMap_Layer_1[i];
+        if (_index == 1)
+        {
+          SDL_SetRenderDrawColor(pRender, 0xff, 0xff, 0xff, 0x80);
+          SDL_Rect _rt = {(i % 8) * 32, (i / 8) * 32, 32, 32};
+          SDL_RenderFillRect(pRender, &_rt);
+        }
+        else if (_index == 2)
+        {
+          SDL_SetRenderDrawColor(pRender, 0x00, 0xff, 0x00, 0x80);
+          SDL_Rect _rt = {(i % 8) * 32, (i / 8) * 32, 32, 32};
+          SDL_RenderFillRect(pRender, &_rt);
+        }
+
+        SDL_SetRenderDrawBlendMode(pRender, SDL_BLENDMODE_NONE);
+      }
+
       //그리드 그리기
       if (g_bDrawGrid)
       {
@@ -101,12 +122,12 @@ int main(int argc, char *argv[])
         SDL_Point m_pt = {_event.motion.x, _event.motion.y};
         if (_event.button.button == 1)
         {
-          if (SDL_PointInRect(&m_pt, &g_rtWordMap))
+          if (SDL_PointInRect(&m_pt, &g_rtWordMap) && !g_bDrawGrid)
           {
             putMap(m_pt.x / 32, m_pt.y / 32, g_nSelectTileIndex, g_worldMap_Layer_1, 8);
           }
         }
-        else if (_event.button.button == 4) //우 클릭
+        else if (_event.button.button == 4 && !g_bDrawGrid) //우 클릭
         {
           if (SDL_PointInRect(&m_pt, &g_rtWordMap))
           {
@@ -142,11 +163,13 @@ int main(int argc, char *argv[])
             int _x = (_event.motion.x) / 32;
             int _y = (_event.motion.y) / 32;
 
-            if (g_bDrawGrid)
+            if (g_bDrawGrid) //속성 바꾸기
             {
+              g_attrMMap_Layer_1[_x + _y * 8] = g_nCurrentAttr;
+
               printf("%3d,%3d,%3d,%3d\r", _x, _y,
                      g_attrMMap_Layer_1[_x + _y * 8],
-                     g_worldMap_Layer_1[_x + _y * 8]);
+                     g_nCurrentAttr);
             }
             else
             {
@@ -180,6 +203,18 @@ int main(int argc, char *argv[])
             else if (_event.key.keysym.sym == SDLK_g)
             {
               g_bDrawGrid = !g_bDrawGrid;
+            }
+            else if (_event.key.keysym.sym == SDLK_1)
+            {
+              parseCmd("brush change 1");
+            }
+            else if (_event.key.keysym.sym == SDLK_2)
+            {
+              parseCmd("brush change 2");
+            }
+            else if (_event.key.keysym.sym == SDLK_0)
+            {
+              parseCmd("brush change 0");
             }
           }
           break;
@@ -216,6 +251,26 @@ int main(int argc, char *argv[])
         {
           strcat(szBuf, _event.text.text);
           printf("%s  \r", szBuf);
+        }
+      }
+      break;
+      case SDL_USEREVENT:
+      {
+        if (strcmp(_event.user.data1, "brush change") == 0)
+        {
+          g_nCurrentAttr = _event.user.code;
+          printf("change brush %d \n", g_nCurrentAttr);
+        }
+        else if (strcmp(_event.user.data1, "save") == 0)
+        {
+          char *pFileName = ((char *)_event.user.data1 + 16);
+          
+          SDL_RWops *rw = SDL_RWFromFile(pFileName, "wb");
+          SDL_RWwrite(rw, g_worldMap_Layer_1, sizeof(Uint16), 64);
+          SDL_RWwrite(rw, g_attrMMap_Layer_1, sizeof(Uint16), 64);
+          SDL_RWclose(rw);
+          
+          printf("save file name %s \n", pFileName);
         }
       }
       break;
