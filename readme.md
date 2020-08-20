@@ -13,6 +13,12 @@ shft + cmd + p 또는 shift+ctrl+p 를 눌러 입력창을 열고  , c/c++ 타�
 Create task.json 파일 만들기 선택  
 others 선택  
 
+### 기타
+https://opengameart.org/  
+https://chasersgaming.itch.io/  
+
+
+
 
 
 
