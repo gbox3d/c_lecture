@@ -17,6 +17,10 @@ others 선택
 https://opengameart.org/  
 https://chasersgaming.itch.io/  
 
+회의링크  
+https://meet.google.com/yze-fgio-omw  
+
+
 
 
 
