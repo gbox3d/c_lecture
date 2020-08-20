@@ -75,15 +75,27 @@ int main(int argc, char *argv[])
       {
         SDL_SetRenderDrawBlendMode(pRender, SDL_BLENDMODE_BLEND);
         Sint16 _index = g_attrMMap_Layer_1[i];
-        if (_index == 1)
+        if (_index == 1) //벽 
         {
           SDL_SetRenderDrawColor(pRender, 0xff, 0xff, 0xff, 0x80);
           SDL_Rect _rt = {(i % 8) * 32, (i / 8) * 32, 32, 32};
           SDL_RenderFillRect(pRender, &_rt);
         }
-        else if (_index == 2)
+        else if (_index == 2) //비상구 
         {
           SDL_SetRenderDrawColor(pRender, 0x00, 0xff, 0x00, 0x80);
+          SDL_Rect _rt = {(i % 8) * 32, (i / 8) * 32, 32, 32};
+          SDL_RenderFillRect(pRender, &_rt);
+        }
+        else if (_index == 3) //숨겨진문
+        {
+          SDL_SetRenderDrawColor(pRender, 0xff, 0x00, 0x00, 0x80);
+          SDL_Rect _rt = {(i % 8) * 32, (i / 8) * 32, 32, 32};
+          SDL_RenderFillRect(pRender, &_rt);
+        }
+        else if (_index == 4) //switch
+        {
+          SDL_SetRenderDrawColor(pRender, 0xff, 0xff, 0x00, 0x80);
           SDL_Rect _rt = {(i % 8) * 32, (i / 8) * 32, 32, 32};
           SDL_RenderFillRect(pRender, &_rt);
         }
@@ -211,6 +223,18 @@ int main(int argc, char *argv[])
             else if (_event.key.keysym.sym == SDLK_2)
             {
               parseCmd("brush change 2");
+            }
+            else if (_event.key.keysym.sym == SDLK_3)
+            {
+              parseCmd("brush change 3");
+            }
+            else if (_event.key.keysym.sym == SDLK_4)
+            {
+              parseCmd("brush change 4");
+            }
+            else if (_event.key.keysym.sym == SDLK_5)
+            {
+              parseCmd("brush change 5");
             }
             else if (_event.key.keysym.sym == SDLK_0)
             {

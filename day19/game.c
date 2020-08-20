@@ -119,7 +119,7 @@ int main(int argc, char **argv)
       }
       //충돌처리 
       Sint16 _attr = g_AttrLayer[g_PlayerPos.x + (g_PlayerPos.y*8)];
-      if(_attr == 1) //벽
+      if(_attr == 1 || _attr == 3) //벽
       {
         g_PlayerPos = oldPos;
       }
@@ -129,7 +129,20 @@ int main(int argc, char **argv)
         //다음 스테이지로 가는 처리 
         g_nGameLogicFsm = 11;
       }
+      else if(_attr == 4)
+      {
+        for(int i=0;i<64;i++)
+        {
+          if(g_AttrLayer[i] == 3)
+          {
+            g_WorldMap[i] = 22;
+            g_AttrLayer[i] = 2; //문으로 만들기
+            break;
+          }
+        }
+      }
 
+      ////속성 처리 
       {
         memset(g_ObjLayer, 0, 64 * sizeof(Uint16));
         g_ObjLayer[g_PlayerPos.y * 8 + g_PlayerPos.x] = 1;
