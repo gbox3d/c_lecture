@@ -52,32 +52,6 @@ int main(int argc, char **argv)
     }
     break;
     }
-
-    // //object layer 재설정
-    //     {
-    //       memset(g_WorldMap_obj_layer,0,64*sizeof(Uint16));
-    //       g_WorldMap_obj_layer[g_PlayerPos.y*8 + g_PlayerPos.x ] = 1;
-    //     }
-
-    //     {
-    //       Sint16 *map = g_WorldMap_obj_layer;
-    //       for (int i = 0; i < 64; i++)
-    //       {
-    //         Sint16 _index = map[i];
-    //         if (_index != -1)
-    //         {
-    //           if (_index == 1)
-    //           {
-    //             //캐릭터 그리기
-    //             int x = i%8;
-    //             int y = i/8;
-    //             putTile(g_pEngineCore->m_pRender, g_pTileSet2, x, y, 190,
-    //                     16, 10, 2);
-    //           }
-    //         }
-    //       }
-    //     }
-
     SDL_RenderPresent(g_pEngineCore->m_pRender);
 
     SDL_Event event;
