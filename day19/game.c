@@ -6,7 +6,9 @@
 
 tDE_S_Core *g_pEngineCore;
 
-Sint16 g_WorldMap[4][64];
+Sint16 g_WorldMap[64];
+Sint16 g_AttrLayer[64];
+Sint16 g_ObjLayer[64];
 
 SDL_Texture *g_pTileSet;
 SDL_Texture *g_pTileSet2;
@@ -14,6 +16,9 @@ SDL_Texture *g_pTileSet2;
 SDL_Point g_PlayerPos;
 
 int g_nGameLogicFsm = 0;
+SDL_bool keyTable[8] = {
+    SDL_FALSE,
+};
 
 int main(int argc, char **argv)
 {
@@ -37,18 +42,105 @@ int main(int argc, char **argv)
     {
     case 0:
       printf("start game? (press key)\n");
-      g_nGameLogicFsm = 1;      
+      g_nGameLogicFsm = 1;
       break;
     case 1:
+      if (keyTable[0]) //키가 눌러 졌는지 검사 ..
+      {
+        printf("here is slient room ... (press key)\n");
+        g_nGameLogicFsm = 2;
+      }
+      break;
+    case 2:
+      if (keyTable[0]) //키가 눌러 졌는지 검사 ..
+      {
+        keyTable[0] = SDL_FALSE;
+        g_nGameLogicFsm = 5;
+      }
+
+      break;
+    case 5:
+      if (keyTable[0]) //키가 눌러 졌는지 검사 ..
+      {
+        keyTable[0] = SDL_FALSE;
+        printf("play game now \n");
+        //게임시작 준비
+        Sint16 *map[2] = {g_WorldMap, g_AttrLayer};
+        loadMap("l1.map", map);
+
+        //플레이어 정보 초기화
+        g_PlayerPos.x = 1;
+        g_PlayerPos.y = 1;
+
+        g_nGameLogicFsm = 10;
+      }
       break;
     case 10:
     {
-      //월드멥 그리기
+      SDL_Point oldPos = g_PlayerPos;
+      if(keyTable[1]) //left
+      {
+        keyTable[1] = SDL_FALSE;
+        g_PlayerPos.x--;
+      }
+      else if(keyTable[2]) //right
+      {
+        keyTable[2] = SDL_FALSE;
+        g_PlayerPos.x++;
+      }
+      else if(keyTable[3]) //right
+      {
+        keyTable[3] = SDL_FALSE;
+        g_PlayerPos.y--;
+      }
+      else if(keyTable[4]) //right
+      {
+        keyTable[4] = SDL_FALSE;
+        g_PlayerPos.y++;
+      }
+      //충돌처리 
+      Sint16 _attr = g_AttrLayer[g_PlayerPos.x + (g_PlayerPos.y*8)];
+      if(_attr == 1) //벽
+      {
+        g_PlayerPos = oldPos;
+      }
+      else if(_attr == 2) //비상구 
+      {
+        g_PlayerPos = oldPos;
+        //다음 스테이지로 가는 처리 
+      }
+
+      {
+        memset(g_ObjLayer, 0, 64 * sizeof(Uint16));
+        g_ObjLayer[g_PlayerPos.y * 8 + g_PlayerPos.x] = 1;
+      }
+
+      //월드멥 랜더링 
       drawWorld(g_pEngineCore->m_pRender,
                 g_pTileSet, 16, 5, 2, //타일셋 정보
                 0, 0,                 //그려질 위치
-                8, g_WorldMap[0]         //월드멥 정보
+                8, g_WorldMap         //월드멥 정보
       );
+
+//오브잭트 레이어 랜더링
+      {
+        Sint16 *map = g_ObjLayer;
+        for (int i = 0; i < 64; i++)
+        {
+          Sint16 _index = map[i];
+          if (_index != -1)
+          {
+            if (_index == 1)
+            {
+              //캐릭터 그리기
+              int x = i % 8;
+              int y = i / 8;
+              putTile(g_pEngineCore->m_pRender, g_pTileSet2, x, y, 190,
+                      16, 10, 2);
+            }
+          }
+        }
+      }
     }
     break;
     }
@@ -60,7 +152,27 @@ int main(int argc, char **argv)
       switch (event.type)
       {
       case SDL_KEYUP:
-      {       
+      {
+        if (event.key.keysym.sym == SDLK_SPACE)
+        {
+          keyTable[0] = SDL_TRUE;
+        }
+        else if(event.key.keysym.scancode == SDL_SCANCODE_LEFT)
+        {
+          keyTable[1] = SDL_TRUE;
+        }
+        else if(event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
+        {
+          keyTable[2] = SDL_TRUE;
+        }
+        else if(event.key.keysym.scancode == SDL_SCANCODE_UP)
+        {
+          keyTable[3] = SDL_TRUE;
+        }
+        else if(event.key.keysym.scancode == SDL_SCANCODE_DOWN)
+        {
+          keyTable[4] = SDL_TRUE;
+        }
       }
       break;
       case SDL_QUIT:
