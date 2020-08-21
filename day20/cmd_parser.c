@@ -95,13 +95,13 @@ void parseCmd(char *_szCmd)
       cmd = 1;
       value = atoi(szTokens[2]);
     }
-    else if(strcmp(szTokens[1], "next") == 0)
+    else if (strcmp(szTokens[1], "next") == 0)
     {
-      cmd=2;
+      cmd = 2;
     }
-    else if(strcmp(szTokens[1], "prev") == 0)
+    else if (strcmp(szTokens[1], "prev") == 0)
     {
-      cmd=3;
+      cmd = 3;
     }
 
     memcpy(pMsgBuf + 16, (Uint16 *)&cmd, 2);
@@ -112,6 +112,14 @@ void parseCmd(char *_szCmd)
     evt.user.data1 = pMsgBuf;
     evt.user.timestamp = SDL_GetTicks();
 
+    SDL_PushEvent(&evt);
+  }
+  else if (strcmp(szTokens[0], "setText") == 0)
+  {
+    SDL_Event evt;
+    evt.type = SDL_USEREVENT;
+    evt.user.data1 = pMsgBuf;
+    evt.user.timestamp = SDL_GetTicks();
     SDL_PushEvent(&evt);
   }
 }

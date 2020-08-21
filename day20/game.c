@@ -13,6 +13,9 @@ Sint16 g_ObjLayer[64];
 SDL_Texture *g_pTileSet;
 SDL_Texture *g_pTileSet2;
 
+SDL_Texture *g_pTextTxture = NULL;
+SDL_Rect g_rectText; //텍스트 텍스춰 크기
+
 SDL_Point g_PlayerPos;
 
 int g_nGameLogicFsm = 0;
@@ -190,6 +193,18 @@ void renderGame()
       }
     }
   }
+
+  //text 랜더링
+  {
+    if (g_pTextTxture)
+    {
+      g_rectText.x = 0;
+      g_rectText.y = 400;
+
+      SDL_RenderCopy(g_pEngineCore->m_pRender, g_pTextTxture, NULL, &g_rectText);
+    }
+  }
+
   SDL_RenderPresent(g_pEngineCore->m_pRender);
 }
 
@@ -198,42 +213,59 @@ SDL_bool bLoop = SDL_TRUE;
 void doEvent()
 {
   SDL_Event event;
-    while (SDL_PollEvent(&event))
+  while (SDL_PollEvent(&event))
+  {
+    switch (event.type)
     {
-      switch (event.type)
+    case SDL_KEYUP:
+    {
+      if (event.key.keysym.sym == SDLK_SPACE)
       {
-      case SDL_KEYUP:
-      {
-        if (event.key.keysym.sym == SDLK_SPACE)
-        {
-          keyTable[0] = SDL_TRUE;
-        }
-        else if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
-        {
-          keyTable[1] = SDL_TRUE;
-        }
-        else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
-        {
-          keyTable[2] = SDL_TRUE;
-        }
-        else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
-        {
-          keyTable[3] = SDL_TRUE;
-        }
-        else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
-        {
-          keyTable[4] = SDL_TRUE;
-        }
+        keyTable[0] = SDL_TRUE;
       }
-      break;
-      case SDL_QUIT:
-        bLoop = SDL_FALSE;
-        break;
-
-      default:
-        break;
+      else if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
+      {
+        keyTable[1] = SDL_TRUE;
+      }
+      else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
+      {
+        keyTable[2] = SDL_TRUE;
+      }
+      else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
+      {
+        keyTable[3] = SDL_TRUE;
+      }
+      else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
+      {
+        keyTable[4] = SDL_TRUE;
+      }
+      else if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+      {
+        //bLoop = SDL_FALSE;
+        parseCmd("quit");
       }
     }
+    break;
+    case SDL_QUIT:
+      bLoop = SDL_FALSE;
+      break;
+    case SDL_USEREVENT:
+    {
+      if (!strcmp("setText", event.user.data1))
+      {
+        Uint16 *pMsg = (char *)event.user.data1 + 16;
+        if (g_pTextTxture)
+          SDL_DestroyTexture(g_pTextTxture);
+        g_pTextTxture = tDE_util_createTextTexture(g_pEngineCore->m_pRender,
+                                                   g_pEngineCore->m_pDefaultFont,
+                                                   pMsg, &g_rectText);
+      }
+    }
+    break;
+    default:
+      break;
+    }
+  }
 }
 
 int main(int argc, char **argv)
@@ -250,19 +282,27 @@ int main(int argc, char **argv)
 
   memset(g_WorldMap, -1, 64 * sizeof(Uint16));
 
+  g_pTextTxture = tDE_util_createTextTexture(g_pEngineCore->m_pRender, g_pEngineCore->m_pDefaultFont,
+                                             L"게임 시작", &g_rectText);
+
   while (bLoop)
   {
-    //게임로직 
+    //게임로직
     doGameLogic();
 
     //랜더링
     renderGame();
 
-    //이벤트 처리  
+    //이벤트 처리
     doEvent();
-    
   }
 
+  if (g_pTextTxture)
+  {
+    SDL_DestroyTexture(g_pTextTxture);
+  }
+
+  SDL_DestroyTexture(g_pTileSet2);
   SDL_DestroyTexture(g_pTileSet);
   tDE_closeCore(g_pEngineCore);
 
