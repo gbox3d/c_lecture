@@ -23,7 +23,7 @@ int doTokenize(char *szBuf, char (*szBufToken)[MAX_TOKEN_SIZE])
 
 void parseCmd(char *_szCmd)
 {
-  static char szCmd[64];
+  static char szCmd[256];
   static char szTokens[8][32];
 
   strcpy(szCmd, _szCmd);
@@ -116,6 +116,18 @@ void parseCmd(char *_szCmd)
   }
   else if (strcmp(szTokens[0], "setText") == 0)
   {
+    strcpy(pMsgBuf, szTokens[0]);
+
+    static char szBuf[128];
+    szBuf[0] = 0x00;
+    for(int i=1;i<_numToken;i++)
+    {
+      strcat(szBuf," ");
+      strcat(szBuf,szTokens[i]);
+    }
+
+    strcpy(pMsgBuf+16, szBuf);
+
     SDL_Event evt;
     evt.type = SDL_USEREVENT;
     evt.user.data1 = pMsgBuf;

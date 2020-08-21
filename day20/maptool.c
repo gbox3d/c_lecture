@@ -234,7 +234,6 @@ void processEvent()
         break;
         case 1: //입력 상태
         {
-
           if (_event.key.keysym.sym == SDLK_RETURN)
           {
             nInputFSM = 0; //대기 상태로 전이

@@ -29,7 +29,7 @@ typedef struct __stage
 } S_Stage_Info;
 
 S_Stage_Info g_stage_info[] = {
-    {"l1.map", {1, 1}, "here is silent room"},
+    {"l1.map", {1, 1}, "여기는 조용한 곳입니다."},
     {"l2.map", {1, 2}, "here is more silent room"},
     {"end", {0, 0}, "u win game"}};
 int g_nCurrentStageNumber = 0;
@@ -70,6 +70,9 @@ void doGameLogic()
 
       S_Stage_Info *pStgInfo = &g_stage_info[g_nCurrentStageNumber];
       printf("%s \n", pStgInfo->introMsg);
+      static char strCmd[256];
+      sprintf(strCmd,"setText %s",pStgInfo->introMsg);
+      parseCmd(strCmd);
 
       //게임시작 준비
       Sint16 *map[2] = {g_WorldMap, g_AttrLayer};
@@ -212,6 +215,8 @@ SDL_bool bLoop = SDL_TRUE;
 
 void doEvent()
 {
+  static char szBuf[64];
+  static Uint16 nInputFSM = 0;
   SDL_Event event;
   while (SDL_PollEvent(&event))
   {
@@ -219,30 +224,73 @@ void doEvent()
     {
     case SDL_KEYUP:
     {
-      if (event.key.keysym.sym == SDLK_SPACE)
+      switch (nInputFSM)
       {
-        keyTable[0] = SDL_TRUE;
+      case 0: //대기상태
+      {
+        if (event.key.keysym.sym == SDLK_SPACE)
+        {
+          keyTable[0] = SDL_TRUE;
+        }
+        else if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
+        {
+          keyTable[1] = SDL_TRUE;
+        }
+        else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
+        {
+          keyTable[2] = SDL_TRUE;
+        }
+        else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
+        {
+          keyTable[3] = SDL_TRUE;
+        }
+        else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
+        {
+          keyTable[4] = SDL_TRUE;
+        }
+        else if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+        {
+          //bLoop = SDL_FALSE;
+          parseCmd("quit");
+        }
+        else if (event.key.keysym.sym == SDLK_RETURN)
+        {
+          printf("input cmd => \n");
+          nInputFSM = 1; //입력 상태로 전이
+        }
       }
-      else if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
+      break;
+      case 1:
       {
-        keyTable[1] = SDL_TRUE;
+        if (event.key.keysym.sym == SDLK_RETURN)
+        {
+          nInputFSM = 0; //대기 상태로 전이
+          // printf("\n%s\n",szBuf);
+          //cmd parser
+          {
+            parseCmd(szBuf);
+          }
+
+          szBuf[0] = 0x00; //문자열 클리어
+        }
+        else if (event.key.keysym.sym == SDLK_BACKSPACE)
+        {
+          int _len = strlen(szBuf);
+          szBuf[_len - 1] = 0x00;
+          printf("%s  \r", szBuf);
+          fflush(stdout);
+        }
       }
-      else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
-      {
-        keyTable[2] = SDL_TRUE;
+      break;
       }
-      else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
+    }
+    break;
+    case SDL_TEXTINPUT:
+    {
+      if (nInputFSM == 1)
       {
-        keyTable[3] = SDL_TRUE;
-      }
-      else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
-      {
-        keyTable[4] = SDL_TRUE;
-      }
-      else if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-      {
-        //bLoop = SDL_FALSE;
-        parseCmd("quit");
+        strcat(szBuf, event.text.text);
+        printf("%s  \r", szBuf);
       }
     }
     break;
