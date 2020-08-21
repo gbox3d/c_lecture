@@ -2,6 +2,8 @@
 
 #define MAX_TOKEN_SIZE 32
 
+static char pMsgBuf[256];
+
 int doTokenize(char *szBuf, char (*szBufToken)[MAX_TOKEN_SIZE])
 {
   char *szpTemp;
@@ -38,15 +40,6 @@ void parseCmd(char *_szCmd)
     evt.quit.timestamp = SDL_GetTicks();
     SDL_PushEvent(&evt);
   }
-  // else if (strcmp(szTokens[0], "setTile") == 0)
-  // {
-  //   //setTile x y index
-  //   int _x = SDL_atoi(szTokens[1]);
-  //   int _y = SDL_atoi(szTokens[2]);
-  //   int _index = SDL_atoi(szTokens[3]);
-
-  //   g_worldMap_Layer_1[(_y * 8) + _x] = _index;
-  // }
   else if (strcmp(szTokens[0], "save") == 0)
   {
     //save file.map
@@ -55,24 +48,24 @@ void parseCmd(char *_szCmd)
     // SDL_RWwrite(rw, g_worldMap_Layer[0], sizeof(Uint16), 64);
     // SDL_RWclose(rw);
 
-    static char pMsg[32];
-    strcpy(pMsg, "save");
-    strcpy(pMsg + 16, pFileName);
+    // static char pMsg[32];
+    strcpy(pMsgBuf, "save");
+    strcpy(pMsgBuf + 16, pFileName);
     SDL_Event evt;
     evt.type = SDL_USEREVENT;
-    evt.user.data1 = pMsg;
+    evt.user.data1 = pMsgBuf;
     evt.user.timestamp = SDL_GetTicks();
     SDL_PushEvent(&evt);
   }
   else if (strcmp(szTokens[0], "load") == 0)
   {
     char *pFileName = szTokens[1];
-    static char pMsg[32];
-    strcpy(pMsg, "load");
-    strcpy(pMsg + 16, pFileName);
+    // static char pMsg[32];
+    strcpy(pMsgBuf, "load");
+    strcpy(pMsgBuf + 16, pFileName);
     SDL_Event evt;
     evt.type = SDL_USEREVENT;
-    evt.user.data1 = pMsg;
+    evt.user.data1 = pMsgBuf;
     evt.user.timestamp = SDL_GetTicks();
     SDL_PushEvent(&evt);
 
@@ -83,28 +76,42 @@ void parseCmd(char *_szCmd)
   else if (strcmp(szTokens[0], "new") == 0)
   {
     // memset(g_worldMap_Layer[0],-1,128);
-    static char *pMsg = "new";
+    // static char *pMsg = "new";
+    strcpy(pMsgBuf, szTokens[0]);
     SDL_Event evt;
     evt.type = SDL_USEREVENT;
-    evt.user.data1 = pMsg;
+    evt.user.data1 = pMsgBuf;
     evt.user.timestamp = SDL_GetTicks();
     SDL_PushEvent(&evt);
-
   }
   else if (strcmp(szTokens[0], "brush") == 0) //brush change (attr)
   {
+    strcpy(pMsgBuf, szTokens[0]);
+    Uint16 cmd = 0;
+    Uint16 value = 0;
+
     if (strcmp(szTokens[1], "change") == 0)
     {
-      static char *pMsg = "brush change";
-      int attr = atoi(szTokens[2]);
-
-      SDL_Event evt;
-      evt.type = SDL_USEREVENT;
-      evt.user.data1 = pMsg;
-      evt.user.code = attr;
-      evt.user.timestamp = SDL_GetTicks();
-
-      SDL_PushEvent(&evt);
+      cmd = 1;
+      value = atoi(szTokens[2]);
     }
+    else if(strcmp(szTokens[1], "next") == 0)
+    {
+      cmd=2;
+    }
+    else if(strcmp(szTokens[1], "prev") == 0)
+    {
+      cmd=3;
+    }
+
+    memcpy(pMsgBuf + 16, (Uint16 *)&cmd, 2);
+    memcpy(pMsgBuf + 18, (Uint16 *)&value, 2);
+
+    SDL_Event evt;
+    evt.type = SDL_USEREVENT;
+    evt.user.data1 = pMsgBuf;
+    evt.user.timestamp = SDL_GetTicks();
+
+    SDL_PushEvent(&evt);
   }
 }
