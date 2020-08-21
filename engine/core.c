@@ -136,13 +136,13 @@ SDL_bool tDE_util_parseSheet(char *szStr, tDE_S_SheetData *pData)
 }
 
 SDL_Texture *tDE_util_createTextTexture(SDL_Renderer *pRenderer,
-                                        TTF_Font *pFont, const Uint16 *text,
+                                        TTF_Font *pFont, const char *text,
                                         SDL_Rect *ptextRect)
 {
 
   // const Uint16 *text = L"게임 시작";
   SDL_Color _whiteColor = {0xff, 0xff, 0xff, 0xff};
-  SDL_Surface *textSurface = TTF_RenderUNICODE_Solid(pFont, text, _whiteColor);
+  SDL_Surface *textSurface = TTF_RenderUTF8_Solid(pFont, text, _whiteColor);
   SDL_Texture *ptex = SDL_CreateTextureFromSurface(pRenderer, textSurface);
 
   ptextRect->w = textSurface->w;

@@ -48,7 +48,7 @@ SDL_Texture *tDE_util_loadTexture(tDE_S_Core *pCore,const char *filename);
 SDL_bool tDE_util_parseSheet(char *szStr, tDE_S_SheetData *pData);
 
 SDL_Texture *tDE_util_createTextTexture(SDL_Renderer *pRenderer,
-                                        TTF_Font *pFont, const Uint16 *text,
+                                        TTF_Font *pFont, const char *text,
                                         SDL_Rect *ptextRect);
 
 #endif

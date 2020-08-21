@@ -253,7 +253,7 @@ void doEvent()
     {
       if (!strcmp("setText", event.user.data1))
       {
-        Uint16 *pMsg = (Uint16 *) ((char *)event.user.data1 + 16);
+        char *pMsg = (char *)event.user.data1 + 16;
         if (g_pTextTxture)
           SDL_DestroyTexture(g_pTextTxture);
         g_pTextTxture = tDE_util_createTextTexture(g_pEngineCore->m_pRender,
@@ -283,7 +283,7 @@ int main(int argc, char **argv)
   memset(g_WorldMap, -1, 64 * sizeof(Uint16));
 
   g_pTextTxture = tDE_util_createTextTexture(g_pEngineCore->m_pRender, g_pEngineCore->m_pDefaultFont,
-                                             L"게임 시작", &g_rectText);
+                                             "게임 시작", &g_rectText);
 
   while (bLoop)
   {
