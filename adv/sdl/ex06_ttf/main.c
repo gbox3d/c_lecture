@@ -74,9 +74,10 @@ int main(int argc, char *argv[])
     {
         SDL_Color textColor = {0xff, 0, 0};
 
-        Uint16 text[] = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!', L'한', L'글', 0x00};
-
-        SDL_Surface *textSurface = TTF_RenderUNICODE_Solid(gFont, text, textColor);
+        //Uint16 text[] = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!', L'한', L'글', 0x00};
+        //SDL_Surface *textSurface = TTF_RenderUNICODE_Solid(gFont, text, textColor);
+        char *text = "Hello world utf-8 코드로 한글 출력 ";
+        SDL_Surface *textSurface = TTF_RenderUTF8_Solid(gFont, text, textColor);
         ttfTxture[0] = SDL_CreateTextureFromSurface(g_pRenderer, textSurface);
         txPos[0].h = textSurface->h;
         txPos[0].w = textSurface->w;
