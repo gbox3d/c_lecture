@@ -253,7 +253,7 @@ void doEvent()
     {
       if (!strcmp("setText", event.user.data1))
       {
-        Uint16 *pMsg = (char *)event.user.data1 + 16;
+        Uint16 *pMsg = (Uint16 *) ((char *)event.user.data1 + 16);
         if (g_pTextTxture)
           SDL_DestroyTexture(g_pTextTxture);
         g_pTextTxture = tDE_util_createTextTexture(g_pEngineCore->m_pRender,
