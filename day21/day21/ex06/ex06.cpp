@@ -14,7 +14,8 @@ struct s_object {
 
 bool _compare(s_object a,s_object b)
 {
-    if (a.hp > b.hp) return true;
+    //if (a.hp > b.hp) return true;
+    if (a.mp > b.mp) return true;
     else return false;
 }
 
