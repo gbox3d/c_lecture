@@ -10,3 +10,6 @@ out/
 *.pyd
 *.o
 *.a
+Debug/
+Release/
+.vs/
