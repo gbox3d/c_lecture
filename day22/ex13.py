@@ -14,6 +14,10 @@ _f = open('t1.bin','wb')
 _f.write(buf)
 _f.close()
 
-
-
 # %%
+
+_f = open('t2.bin','rb')
+buf = _f.read()
+_f.close()
+
+print(buf)
