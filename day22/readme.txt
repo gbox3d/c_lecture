@@ -22,3 +22,11 @@ i,I => int,4
 h,H => short,2
 b,B => byte,1
 
+PIL( python image library)
+
+pip install image
+
+
+
+
+
