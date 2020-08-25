@@ -6,3 +6,7 @@ miny.test()
 moe.test()
 meeny.test()
 # %%
+import my_package
+
+my_package.eeny()
+# %%
