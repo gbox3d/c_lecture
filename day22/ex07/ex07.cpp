@@ -111,6 +111,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
+HWND testWndHandle;
+WNDPROC oldEditProc;
+LRESULT CALLBACK testWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+
 //
 //  함수: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
@@ -125,6 +130,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+    case WM_CREATE:
+    {
+        testWndHandle = CreateWindow(L"edit", NULL,
+            WS_CHILD| WS_VISIBLE|WS_BORDER,
+            100,100,200,32,
+            hWnd,(HMENU)1001,hInst,NULL
+        );
+        oldEditProc = (WNDPROC )SetWindowLong(testWndHandle, GWL_WNDPROC, (LONG)testWndProc);
+    }
+        break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -178,3 +193,28 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return (INT_PTR)FALSE;
 }
+
+LRESULT CALLBACK testWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    switch (message)
+    {
+    case WM_KEYDOWN:
+    {
+        static TCHAR szbuf[256];
+        swprintf_s(szbuf, sizeof(szbuf) / sizeof(TCHAR), L"key : %8d\n", wParam);
+        OutputDebugString(szbuf);
+    }
+        break;
+    case WM_CHAR:
+    {
+        if (wParam < '0' || wParam > '9') return 0;
+    }
+    break;
+    default:
+        break;
+    }
+
+    return CallWindowProc(oldEditProc, hWnd, message, wParam, lParam);
+}
+
+
