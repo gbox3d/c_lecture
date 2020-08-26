@@ -7,7 +7,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ex01", "ex01\ex01.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ex02", "ex02\ex02.vcxproj", "{F6233D0C-4B37-40C5-96F0-B374A2297265}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ex03", "ex03\ex03.vcxproj", "{1D2D995A-0C38-46A8-A8D9-4446BC2F6676}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ex03_tcp_client", "ex03\ex03.vcxproj", "{1D2D995A-0C38-46A8-A8D9-4446BC2F6676}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ex04_udp_guest", "ex04_udp_guest\ex04_udp_guest.vcxproj", "{E57BBF2E-6078-4C4C-916D-F5E8973995ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,14 @@ Global
 		{1D2D995A-0C38-46A8-A8D9-4446BC2F6676}.Release|x64.Build.0 = Release|x64
 		{1D2D995A-0C38-46A8-A8D9-4446BC2F6676}.Release|x86.ActiveCfg = Release|Win32
 		{1D2D995A-0C38-46A8-A8D9-4446BC2F6676}.Release|x86.Build.0 = Release|Win32
+		{E57BBF2E-6078-4C4C-916D-F5E8973995ED}.Debug|x64.ActiveCfg = Debug|x64
+		{E57BBF2E-6078-4C4C-916D-F5E8973995ED}.Debug|x64.Build.0 = Debug|x64
+		{E57BBF2E-6078-4C4C-916D-F5E8973995ED}.Debug|x86.ActiveCfg = Debug|Win32
+		{E57BBF2E-6078-4C4C-916D-F5E8973995ED}.Debug|x86.Build.0 = Debug|Win32
+		{E57BBF2E-6078-4C4C-916D-F5E8973995ED}.Release|x64.ActiveCfg = Release|x64
+		{E57BBF2E-6078-4C4C-916D-F5E8973995ED}.Release|x64.Build.0 = Release|x64
+		{E57BBF2E-6078-4C4C-916D-F5E8973995ED}.Release|x86.ActiveCfg = Release|Win32
+		{E57BBF2E-6078-4C4C-916D-F5E8973995ED}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -11,3 +11,5 @@ _data , _rinfo = udp_socket.recvfrom(1024)
 
 print(f'received : {_rinfo[0]}:{_rinfo[1]} : {_data.decode()}')
 
+
+# %%
