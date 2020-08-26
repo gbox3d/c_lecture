@@ -4,7 +4,7 @@
 #include <iostream>
 #include <stdio.h>
 
-#define _CRT_SECURE_NO_WARNINGS
+//#define _CRT_SECURE_NO_WARNINGS
 
 typedef struct MyStruct
 {
