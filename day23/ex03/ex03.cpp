@@ -1,43 +1,64 @@
-﻿// ex03.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
-//
+﻿/*
+	Create a TCP socket
 
-#include <iostream>
-#include <WinSock2.h>
-#include <WS2tcpip.h>
+	심각도	코드	설명	프로젝트	파일	줄	비표시 오류(Suppression) 상태
+오류	C4996	'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings	ex03	C:\Users\User\Desktop\mywork\c_lecture\day23\ex03\ex03.cpp	34	
 
-#pragma comment(lib,"ws2_32.lib")
+	*/
 
-int main()
+#include<stdio.h>
+#include<winsock2.h>
+
+#pragma warning(disable:4996)
+#pragma comment(lib,"ws2_32.lib") //Winsock Library
+
+
+int main(int argc, char* argv[])
 {
-	WSADATA wsaData;
-	SOCKET socketCli;
-	char szMsg[32];
+	WSADATA wsa;
+	SOCKET s;
+	struct sockaddr_in server;
 
-	addrinfo addrServer;
-
-	WSAStartup(MAKEWORD(2, 0), &wsaData);
-	socketCli = socket(AF_INET, SOCK_STREAM, 0);
-
-	//접속할 서버 주소 구조체 만들기 
-
-	
-	//addrServer.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
-	memset((char*)&addrServer, 0, sizeof(addrServer));
-	InetPton(AF_INET, L"127.0.0.1", &addrServer..S_un.S_addr);
-	addrServer.ai_family = AF_INET;
-	addrServer.sin_por = htonl(8282);
-
-	printf("connecting server \n");
-	//서버에 접속
-	if (connect(socketCli, (struct sockaddr*)&addrServer, sizeof(addrServer)) == SOCKET_ERROR)
+	printf("\nInitialising Winsock...");
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 	{
-		printf("erro code %d \n",WSAGetLastError());
+		printf("Failed. Error Code : %d", WSAGetLastError());
 		return 1;
 	}
-	printf("connected server \n");
-	send(socketCli, "hello TCP", 10, 0);
 
-	closesocket(socketCli);
+	printf("Initialised.\n");
+
+	//Create a socket
+	if ((s = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
+	{
+		printf("Could not create socket : %d", WSAGetLastError());
+	}
+
+	printf("Socket created.\n");
+
+	server.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+	server.sin_family = AF_INET;
+	server.sin_port = htons(8282);
+	
+
+	//Connect to remote server
+	if (connect(s, (struct sockaddr*)&server, sizeof(server)) < 0)
+	{
+		puts("connect error");
+		return 1;
+	}
+
+	puts("Connected");
+
+	const char* message = "hello";
+	if (send(s,message, strlen(message), 0) < 0)
+	{
+		puts("Send failed");
+		return 1;
+	}
+	puts("Data Send\n");
+
 
 	return 0;
 }
+
