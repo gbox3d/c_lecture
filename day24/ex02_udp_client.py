@@ -9,7 +9,7 @@ udp_socket = socket.socket(
 
 print('init socket')
 
-_buf = pack("BBhf",0x01,0x00,10,3.14)
+_buf = pack("BBhf",0x99,0x00,10,3.14)
 udp_socket.sendto(_buf,('192.168.0.9',8284))
 print('send data')
 
