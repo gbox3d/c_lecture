@@ -7,9 +7,20 @@ static PyObject *hello()
   return Py_BuildValue("");
 }
 
+static PyObject *c_add(PyObject *self,PyObject *args)
+{
+  int a,b,r;
+  if(!PyArg_ParseTuple(args,"ii",&a,&b)) //파이썬에서 받은 데이터 언패킹 
+    return NULL;
+  
+  r = a+b;
+  return Py_BuildValue("i",r); //패킹해서 파이썬쪽으로 넘겨주기 
+}
+
 static struct PyMethodDef _sample_methods[] =
 {
   {"hello",hello,METH_NOARGS,NULL},
+  {"c_add",c_add,METH_VARARGS,NULL},
   {NULL}  
 };
 
