@@ -39,3 +39,7 @@ if __name__ == "__main__":
   print(model(_input)) # 훈련후 
 
 # %%
+  model.save_weights('train_data/xor.ckpt')
+
+
+# %%
